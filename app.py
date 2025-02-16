@@ -1,11 +1,7 @@
 import streamlit as st
 import json
-import pyperclip  # Necesario para copiar al portapapeles
 
 def list_first_card_details(data):
-    """
-    data será el contenido JSON ya cargado en memoria (no un path de fichero).
-    """
     custom_fields_map = {field['id']: field['name'] for field in data.get('customFields', [])}
     list_names = {lst['id']: lst['name'] for lst in data.get('lists', [])}
 
@@ -45,18 +41,13 @@ def main():
     if uploaded_file is not None:
         try:
             data = json.load(uploaded_file)
-            results = list_first_card_details(data)
+            resultado_texto = list_first_card_details(data)
 
-            st.subheader("Resultados")
-            resultado_texto = results if results else "No hay datos procesados."
-            
-            # Mostrar el resultado en un cuadro de texto para copiar fácilmente
-            text_area = st.text_area("Texto procesado", resultado_texto, height=300)
-            
-            # Botón para copiar al portapapeles
-            if st.button("Copiar al portapapeles"):
-                pyperclip.copy(resultado_texto)
-                st.success("Texto copiado al portapapeles")
+            # Mostrar el resultado en un área de texto para copiar manualmente
+            st.text_area("Texto procesado (copia manualmente con Ctrl+C)", resultado_texto, height=300)
+
+            # Mensaje de ayuda
+            st.markdown("**Para copiar el contenido, selecciona el texto y usa `Ctrl + C` (o `Cmd + C` en Mac).**")
 
         except Exception as e:
             st.error(f"Error al procesar el JSON: {e}")
